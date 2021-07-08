@@ -1,7 +1,8 @@
 # ShipRSImageNet_devkit
-The ShipRSImageNet Development kit is based on DOTA Development kit.  and provides some useful function of ShipRSImageNet.
+
 [![python](https://img.shields.io/badge/Python-3.x-ff69b4.svg)](https://github.com/luyanger1799/Amazing-Semantic-Segmentation.git)[![Apache](https://img.shields.io/badge/Apache-2.0-blue.svg)](https://github.com/luyanger1799/Amazing-Semantic-Segmentation.git)
 
+The ShipRSImageNet Development kit is based on DOTA Development kit, and provides some useful function of ShipRSImageNet.
 ## Functions
 
 The code is useful for ShipRSImageNet. The code provide the following function

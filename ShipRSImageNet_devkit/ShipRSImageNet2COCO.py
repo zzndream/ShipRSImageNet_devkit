@@ -1,32 +1,40 @@
+# import dota_utils as util
 import os
+# import cv2
 import json
+# from PIL import Image
 import xmltodict
 import xml.etree.ElementTree as ET
+# from ShipRSImageNet_devkit import ShipRSImageNet_utils as util
+# from collections import OrderedDict
 
-cls_names_Level3 = ['Other Ship', 'Other Warship', 'Submarine', 'Other Aircraft Carrier', 'Enterprise', 'Nimitz',
-                    'Midway',
-                    'Ticonderoga',
-                    'Other Destroyer', 'Atago DD', 'Arleigh Burke DD', 'Hatsuyuki DD', 'Hyuga DD', 'Asagiri DD',
-                    'Other Frigate',
-                    'Perry FF',
-                    'Patrol', 'Other Landing', 'YuTing LL', 'YuDeng LL', 'YuDao LL', 'YuZhao LL', 'Austin LL',
-                    'Osumi LL',
-                    'Wasp LL', 'LSD 41 LL', 'LHA LL', 'Commander', 'Other Auxiliary Ship', 'Medical Ship', 'Test Ship',
-                    'Training Ship',
-                    'AOE', 'Masyuu AS', 'Sanantonio AS', 'EPF', 'Other Merchant', 'Container Ship', 'RoRo', 'Cargo',
-                    'Barge', 'Tugboat', 'Ferry', 'Yacht', 'Sailboat', 'Fishing Vessel', 'Oil Tanker', 'Hovercraft',
-                    'Motorboat', 'Dock']
-cls_names_Level2 = ['Other Ship', 'Other Warship', 'Submarine', 'Aircraft Carrier', 'Cruiser', 'Destroyer',
-                    'Frigate', 'Patrol', 'Landing', 'Commander', 'Auxiliary Ships', 'Other Merchant',
-                    'Container Ship', 'RoRo', 'Cargo', 'Barge', 'Tugboat', 'Ferry', 'Yacht',
-                    'Sailboat', 'Fishing Vessel', 'Oil Tanker', 'Hovercraft', 'Motorboat', 'Dock']
-
-cls_names_Level1 = ['Other Ship', 'Warship', 'Merchant', 'Dock']
-
-cls_names_Level0 = ['Ship', 'Dock']
-
+wordname_50 = ['Other Ship', 'Other Warship', 'Submarine', 'Other Aircraft Carrier', 'Enterprise', 'Nimitz', 'Midway',
+           'Ticonderoga',
+           'Other Destroyer', 'Atago DD', 'Arleigh Burke DD', 'Hatsuyuki DD', 'Hyuga DD', 'Asagiri DD', 'Other Frigate',
+           'Perry FF',
+           'Patrol', 'Other Landing', 'YuTing LL', 'YuDeng LL', 'YuDao LL', 'YuZhao LL', 'Austin LL', 'Osumi LL',
+           'Wasp LL', 'LSD 41 LL', 'LHA LL', 'Commander', 'Other Auxiliary Ship', 'Medical Ship', 'Test Ship',
+           'Training Ship',
+           'AOE', 'Masyuu AS', 'Sanantonio AS', 'EPF', 'Other Merchant', 'Container Ship', 'RoRo', 'Cargo',
+           'Barge', 'Tugboat', 'Ferry', 'Yacht', 'Sailboat', 'Fishing Vessel', 'Oil Tanker', 'Hovercraft',
+           'Motorboat', 'Dock']
+# wordname_50 = ['Other Ship', 'Other Warship', 'Submarine', 'Other Aircraft Carrier', 'Enterprise', 'Nimitz', 'Midway',
+#            'Ticonderoga',
+#            'Other Destroyer', 'Atago DD', 'Arleigh Burke DD', 'Hatsuyuki DD', 'Hyuga DD', 'Asagiri DD', 'Frigate',
+#            'Perry FF',
+#            'Patrol', 'Other Landing', 'YuTing LL', 'YuDeng LL', 'YuDao LL', 'YuZhao LL', 'Austin LL', 'Osumi LL',
+#            'Wasp LL', 'LSD 41 LL', 'LHA LL', 'Commander', 'Other Auxiliary Ship', 'Medical Ship', 'Test Ship',
+#            'Training Ship',
+#            'AOE', 'Masyuu AS', 'Sanantonio AS', 'EPF', 'Other Merchant', 'Container Ship', 'RoRo', 'Cargo',
+#            'Barge', 'Tugboat', 'Ferry', 'Yacht', 'Sailboat', 'Fishing Vessel', 'Oil Tanker', 'Hovercraft',
+#            'Motorboat', 'Dock']
 
 def ShipImageNet2COCOTrain(filenames, destfile, cls_names, level_num):
+    # set difficult to filter '2', '1', or do not filter, set '-1'
+
+    # imageparent = os.path.join(srcpath, 'JPEGImages')
+    # labelparent = .path.join(srcpath, 'Annotations_v2')
+
     if level_num == 3:
         level_class = 'level_3'
     elif level_num == 2:
@@ -86,15 +94,14 @@ def ShipImageNet2COCOTrain(filenames, destfile, cls_names, level_num):
                 # 计算旋转矩形框旋转角度
                 # roted_box = util.polygonToRotRectangle([x1,y1,x2,y2,x3,y3,x4,y4])
                 # xcenter,ycenter,width,height,angle = roted_box
-                single_obj['bbox'] = xmin, ymin, width, height
+                single_obj['bbox'] = xmin,ymin,width,height
                 single_obj['image_id'] = image_id
                 data_dict['annotations'].append(single_obj)
                 single_obj['id'] = inst_count
                 inst_count = inst_count + 1
             image_id = image_id + 1
         json.dump(data_dict, f_out)
-    print('Total Instances of Level{}:'.format(level_num), image_id)
-
+    print('Total Instances:',image_id)
 
 def ShipImageNet2COCOTest(filenames, destfile, cls_names):
     # imageparent = os.path.join(srcpath, 'JPEGImages')
@@ -120,12 +127,11 @@ def ShipImageNet2COCOTest(filenames, destfile, cls_names):
             image_id = image_id + 1
         json.dump(data_dict, f_out)
 
-
 def get_filenames(rootdir, file_dir, set_name):
     dataset_name = set_name + '.txt'
     File = os.path.join(text_dir, dataset_name)
     filenames = list()
-    # level_num = 3
+    level_num = 3
     with open(File, "rb") as f:
         for line in f:
             fileName = str(line.strip(), encoding="utf-8")
@@ -135,33 +141,33 @@ def get_filenames(rootdir, file_dir, set_name):
             filenames.append(annotation_path)
     return filenames
 
-
 if __name__ == '__main__':
 
-    rootdir = '../data/ShipRSImageNet/VOC_Format/Annotations/'
-    text_dir = '../data/ShipRSImageNet/VOC_Format/ImageSets/'
-    out_dir = '../COCO_Format/'
+
+    rootdir = '/home/ssd/dataset/ShipRSImageNet/VOC_Format/Annotations/'
+    text_dir = '/home/ssd/dataset/ShipRSImageNet/VOC_Format/ImageSets/'
+    out_dir = '/home/zzn/Documents/zhangzhn_workspace/pycharm/ship_dataset/COCO_Format/'
     level_num = 0
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
+
     train_filenames = get_filenames(rootdir, text_dir, 'train')
     val_filenames = get_filenames(rootdir, text_dir, 'val')
     test_filenames = get_filenames(rootdir, text_dir, 'test')
-    cls_names_Level = [cls_names_Level0,cls_names_Level1,cls_names_Level2,cls_names_Level3]
 
-    for i in range(4):
+    # print(train_filenames)
+    # print('\n')
 
-        train_json_file_name = "{}ShipRSImageNet_bbox_train_level_{}.json".format(out_dir, i)
-        val_json_file_name = "{}ShipRSImageNet_bbox_val_level_{}.json".format(out_dir, i)
-        test_json_file_name = "{}ShipRSImageNet_bbox_test_level_{}.json".format(out_dir, i)
-        # cls_names_Level = 'cls_names_Level{}'.format(i)
 
-        print('json file name to save:', train_json_file_name, val_json_file_name, test_json_file_name)
-        print('cls_names_Level :', cls_names_Level)
+    train_json_file_name  = "{}ShipRSImageNet_bbox_train_level_{}.json".format(out_dir, level_num)
+    val_json_file_name = "{}ShipRSImageNet_bbox_val_level_{}.json".format(out_dir, level_num)
+    test_json_file_name = "{}ShipRSImageNet_bbox_test_level_{}.json".format(out_dir, level_num)
 
-        ShipImageNet2COCOTrain(train_filenames, train_json_file_name, cls_names_Level[i], i)
-        ShipImageNet2COCOTrain(val_filenames, val_json_file_name, cls_names_Level[i], i)
-        ShipImageNet2COCOTest(test_filenames, test_json_file_name, cls_names_Level[i])
+    ShipImageNet2COCOTrain(train_filenames, train_json_file_name, wordname_50, level_num)
+    ShipImageNet2COCOTrain(val_filenames, val_json_file_name, wordname_50, level_num)
+    ShipImageNet2COCOTest(test_filenames, test_json_file_name, wordname_50)
 
     print('Finished')
+
+
